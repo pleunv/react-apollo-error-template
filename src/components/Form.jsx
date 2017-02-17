@@ -28,7 +28,12 @@ class Form extends React.Component {
   }
 
   submitForm() {
-    this.props.updatePerson(this.state.id, this.state.name);
+    if (this.props.id) {
+      this.props.updatePerson(this.state.id, this.state.name);
+    } else {
+      this.props.createPerson(this.state.name);
+    }
+
     this.props.onSubmit();
   }
 
@@ -39,7 +44,7 @@ class Form extends React.Component {
   };
 
   render() {
-    if (!this.props.person) return null;
+    if (this.props.id && !this.props.person) return null;
 
     return (
       <form onSubmit={this.handleSubmit}>
@@ -85,4 +90,22 @@ const withUpdatePerson = graphql(UpdatePersonMutation, {
   })
 });
 
-export default compose(withData, withUpdatePerson)(Form);
+const CreatePersonMutation = gql`
+  mutation CreatePerson($name: String!) {
+    createPerson(name: $name) {
+      name
+    }
+  }
+`;
+
+const withCreatePerson = graphql(CreatePersonMutation, {
+  props: ({ mutate }) => ({
+    createPerson: (name) =>
+      mutate({
+        variables: { name },
+        refetchQueries: ['GetPeopleList']
+      })
+  })
+});
+
+export default compose(withData, withUpdatePerson, withCreatePerson)(Form);

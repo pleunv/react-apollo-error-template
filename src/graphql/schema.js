@@ -33,6 +33,17 @@ const updatePerson = (id, name) => {
   return null;
 };
 
+const createPerson = (name) => {
+  const lastId = peopleData[peopleData.length - 1].id;
+  const newPerson = {
+    id: lastId + 1,
+    name
+  };
+
+  peopleData.push(newPerson);
+  return newPerson;
+};
+
 const QueryType = new GraphQLObjectType({
   name: 'Query',
   fields: {
@@ -60,6 +71,13 @@ const MutationType = new GraphQLObjectType({
         name: { type: GraphQLString }
       },
       resolve: (_, { id, name }) => updatePerson(id, name)
+    },
+    createPerson: {
+      type: PersonType,
+      args: {
+        name: { type: GraphQLString }
+      },
+      resolve: (_, { name }) => createPerson(name)
     }
   }
 })

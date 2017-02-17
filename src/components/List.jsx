@@ -18,9 +18,12 @@ class List extends React.Component {
 
   render() {
     return (
-      <ul>
-        {this.props.items.map((item) => this.renderPerson(item))}
-      </ul>
+      <div>
+        <ul>
+          {this.props.items.map((item) => this.renderPerson(item))}
+        </ul>
+        <button onClick={this.props.onCreateClick}>create</button>
+      </div>
     );
   }
 }
